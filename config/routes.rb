@@ -17,4 +17,6 @@ Rails.application.routes.draw do
 
   resources :books
 
+  get 'books/users/:id', to:'books#show_by_user'
+
 end
