@@ -2,8 +2,16 @@ class BooksController < ApplicationController
 
   before_action :authorization
 
+  def index
+    @books = params.keys.include?('filter') ? filter_books(params[:filter], params[:name]) : filter_books("user_id", @current_user)
+  end
+
   def show
     @book = Book.find(params[:id])
+  end
+
+  def show_by_user
+    @books = Book.where(user_id: params[:id])
   end
 
   def create
@@ -24,6 +32,10 @@ class BooksController < ApplicationController
   private
 
   def book_params
-    params.require(:book).permit(:name, :author, :status, :user_id)
+    params.require(:book).permit(:name, :author, :status, :user_id, :category)
+  end
+
+  def filter_books(filter, name)
+      Book.where("#{filter} = ?", name)
   end
 end
