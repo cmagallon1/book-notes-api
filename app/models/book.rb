@@ -1,7 +1,7 @@
 class Book < ApplicationRecord
   belongs_to :user
   enum status: { awaiting: 0, finished: 1, wip: 2 } 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true
   validates :author, presence: true
   validates :status, presence: true
   validates :category, presence: true
