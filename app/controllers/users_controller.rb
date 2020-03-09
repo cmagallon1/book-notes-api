@@ -37,7 +37,7 @@ class UsersController < ApplicationController
   private 
   
   def find_user(username, email)
-    @user = User.where("username = ? or email = ? ", username, email)
+    User.where("username = ? or email = ? ", username, email).first
   end
 
   def user_params
