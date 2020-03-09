@@ -9,5 +9,6 @@ else
     json.author book.author
     json.status book.status
     json.user_id book.user_id
+    json.category book.category
   end
 end
