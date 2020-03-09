@@ -32,7 +32,7 @@ class BooksController < ApplicationController
   private
 
   def book_params
-    params.require(:book).permit(:name, :author, :status, :user_id)
+    params.require(:book).permit(:name, :author, :status, :user_id, :category)
   end
 
   def filter_books_by(filter, name)

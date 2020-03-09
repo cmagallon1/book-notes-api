@@ -4,6 +4,7 @@ class Book < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :author, presence: true
   validates :status, presence: true
+  validates :category, presence: true
 
   before_save do
     self.status = 0
