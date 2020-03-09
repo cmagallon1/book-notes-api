@@ -15,4 +15,6 @@ Rails.application.routes.draw do
     delete '/:id', to: 'users#destroy'
   end
 
+  resources :books
+
 end
