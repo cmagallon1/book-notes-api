@@ -1,41 +1,44 @@
 class BooksController < ApplicationController
-
   before_action :authorization
+  around_action :catch_errors
+  before_action :find_book, except: [:index, :create]
 
   def index
-    @books = params.keys.include?('filter') ? filter_books(params[:filter], params[:name]) : filter_books("user_id", @current_user)
-  end
-
-  def show
-    @book = Book.find(params[:id])
-  end
-
-  def show_by_user
-    @books = Book.where(user_id: params[:id])
+    @books = params[:filter].blank? ? Book.where(user_id: params[:user_id]) : Book.books(filter_params)
   end
 
   def create
-    @book = Book.new(book_params)
-    @book.save
+    @book = Book.new(book_params.merge(user_id: params[:user_id]))
+    @book.save!
   end
 
   def update
-    @book = Book.find(params[:id])
-    @book.update(book_params)
+    @book.update!(book_params)
   end
 
   def destroy
-    @book = Book.find(params[:id])
-    @book.destroy
+    @book.delete
   end
 
   private
 
   def book_params
-    params.require(:book).permit(:name, :author, :status, :user_id, :category)
+    params.require(:book).permit(:name, :author, :status, :category)
   end
 
-  def filter_books(filter, name)
-      Book.where("#{filter} = ?", name)
+  def find_book
+    @book = Book.find(params[:id])
+  end
+
+  def filter_params
+    params.require(:filter).permit(:field, :value)
+  end
+
+  def catch_errors
+    yield
+  rescue ActiveRecord::RecordNotFound => err
+    render json: { ok: false, status: 404, err: err }
+  rescue ActiveRecord::RecordInvalid => err
+    render json: { ok: false, status: 400, err: err }
   end
 end
