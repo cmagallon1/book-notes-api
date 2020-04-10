@@ -3,7 +3,6 @@ class Book < ApplicationRecord
   enum status: { awaiting: 0, finished: 1, wip: 2 } 
   validates :author, :status, :category, presence: true
   validates :name, presence: true, uniqueness: true
-  validates :category, presence: true
 
   scope :books, -> (filters){ where("#{filters[:field]} = ?", filters[:value]) }
 

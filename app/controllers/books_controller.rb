@@ -31,7 +31,7 @@ class BooksController < ApplicationController
   end
 
   def filter_params
-    params.require(:filter).permit(:filter, :value)
+    params.require(:filter).permit(:field, :value)
   end
 
   def catch_errors
