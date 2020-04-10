@@ -1,5 +1,5 @@
 json.ok true
-json.status 200
+json.status 201
 json.user do
   json.id @user.id
   json.username @user.username
