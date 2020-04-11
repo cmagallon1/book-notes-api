@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
   before_action :authorization, except: :create
-  around_action :catch_errors
   before_action :find_user, only: [:update, :destroy, :show]
 
   def create 
@@ -24,13 +23,5 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:first_name, :last_name, :email, :username, :password)
-  end
-
-  def catch_errors
-    yield
-  rescue ActiveRecord::RecordNotFound => err
-    render json: { ok: false, status: 404, err: err }
-  rescue ActiveRecord::RecordInvalid => err
-    render json: { ok: false, status: 400, err: err }
   end
 end

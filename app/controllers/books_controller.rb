@@ -1,6 +1,5 @@
 class BooksController < ApplicationController
   before_action :authorization
-  around_action :catch_errors
   before_action :find_book, except: [:index, :create]
 
   def index
@@ -32,13 +31,5 @@ class BooksController < ApplicationController
 
   def filter_params
     params.require(:filter).permit(:field, :value)
-  end
-
-  def catch_errors
-    yield
-  rescue ActiveRecord::RecordNotFound => err
-    render json: { ok: false, status: 404, err: err }
-  rescue ActiveRecord::RecordInvalid => err
-    render json: { ok: false, status: 400, err: err }
   end
 end
