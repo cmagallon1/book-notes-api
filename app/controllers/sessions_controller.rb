@@ -10,15 +10,6 @@ class SessionsController < ApplicationController
     end
   end
 
-  def destroy
-    @current_user = nil
-    unless @current_user
-      render json: { ok: true, status: 200, data: 'signout successfully'}
-    else 
-      render json: { ok: false, status: 400, err: 'Something went wrong'}
-    end
-  end
-
   private
 
   def user
