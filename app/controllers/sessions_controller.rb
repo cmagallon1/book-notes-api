@@ -1,5 +1,4 @@
 class SessionsController < ApplicationController
-
   def create
     @user = user
     if @user&.authenticate(user_params[:password])
@@ -7,6 +6,15 @@ class SessionsController < ApplicationController
     else
       render json: { ok: false, err: 'Unauthorized' }, status: 401
     end
+  end
+
+  def destroy
+    @current_user = nil
+    unless @current_user 
+      render json: { ok: true, data: 'Loggout successfully' }
+    else 
+      render json: { ok: true, data: 'Error trying to logout' }, status: 400
+    end 
   end
 
   private

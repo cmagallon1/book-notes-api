@@ -15,4 +15,8 @@ class ApplicationController < ActionController::API
     token = request.headers['Authorization']
     WebToken.decode(token)
   end
+
+  def current_user(param)
+    @current_user = User.find_by!("uuid = ? and disable IS NULL", params[param])
+  end
 end
