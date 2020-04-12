@@ -5,6 +5,7 @@ describe "Books", type: :request do
   before do 
     @token = login['data']['token']
     @user = create(:user)
+    @user.reload
     @headers = { "ACCEPT": "application/json", "Authorization": @token }
   end
 
@@ -12,7 +13,7 @@ describe "Books", type: :request do
     it "show books" do 
       book = build(:book, user_id: @user.id)
       expect(book.save).to eq(true)
-      get user_books_path(@user), headers: @headers
+      get user_books_path(@user.uuid), headers: @headers
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
       expect(json['books']).to eq(book_attributes)
@@ -25,7 +26,7 @@ describe "Books", type: :request do
       expect(book.save).to eq(true)
       book2 = build(:book, user_id: @user.id, category: 'ancient literature')
       expect(book2.save).to eq(true)
-      get user_books_path(@user), params: { filter: { field: 'category', value: 'fiction' }  }, headers: @headers
+      get user_books_path(@user.uuid), params: { filter: { field: 'category', value: 'fiction' }  }, headers: @headers
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
       expect(json['books']).to eq([remove_params(book.attributes, "updated_at", "created_at")])
@@ -35,14 +36,14 @@ describe "Books", type: :request do
   it "show book" do 
     book = build(:book, user_id: @user.id)
     expect(book.save).to eq(true)
-    get "/users/#{@user.id}/books/#{book.id}", headers: @headers
+    get "/users/#{@user.uuid}/books/#{book.id}", headers: @headers
     expect(response).to have_http_status(:success)
     json = JSON.parse(response.body)
     expect(json['book']).to eq(remove_params(book.attributes, "updated_at", "created_at"))
   end
 
   it "create book" do 
-    post user_books_path(@user), params: book_params, headers: @headers 
+    post user_books_path(@user.uuid), params: book_params, headers: @headers 
     expect(response).to have_http_status(:success)
   end
 
@@ -50,7 +51,7 @@ describe "Books", type: :request do
     book = build(:book, user_id: @user.id)
     expect(book.save).to eq(true)
     new_attributes = book_params
-    put "/users/#{@user.id}/books/#{book.id}", params: new_attributes, headers: @headers 
+    put "/users/#{@user.uuid}/books/#{book.id}", params: new_attributes, headers: @headers 
     expect(response).to have_http_status(:success)
     json = JSON.parse(response.body)
     json = json['book']
@@ -63,7 +64,7 @@ describe "Books", type: :request do
   it "delete book" do 
     book = build(:book, user_id: @user.id)
     expect(book.save).to eq(true)
-    delete "/users/#{@user.id}/books/#{book.id}", headers: @headers 
+    delete "/users/#{@user.uuid}/books/#{book.id}", headers: @headers 
     expect(response).to have_http_status(:success)
   end
 
