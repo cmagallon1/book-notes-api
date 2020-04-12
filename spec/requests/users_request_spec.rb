@@ -6,6 +6,7 @@ describe "Users", type: :request do
     @token = login['data']['token']
     @headers = {"ACCEPT": "application/json", "Authorization": @token}
     @user = create(:user)
+    @user.reload
   end
 
   it "create user" do 
@@ -15,7 +16,7 @@ describe "Users", type: :request do
   end
 
   it "show user" do 
-    get user_path(@user), headers: @headers
+    get user_path(@user.uuid), headers: @headers
     expect(response).to have_http_status(:success)
     json = JSON.parse(response.body)
     json = json['user']
@@ -28,7 +29,7 @@ describe "Users", type: :request do
 
   it "update user" do 
     new_attributes = user_params
-    put user_path(@user), params: new_attributes, headers: @headers
+    put user_path(@user.uuid), params: new_attributes, headers: @headers
     expect(response).to have_http_status(:success)
     json = JSON.parse(response.body)
     json = json['user']
@@ -40,7 +41,7 @@ describe "Users", type: :request do
   end
 
   it "delete user" do 
-    delete user_path(@user), headers: @headers
+    delete user_path(@user.uuid), headers: @headers
     expect(response).to have_http_status(:success)
     json = JSON.parse(response.body)
     json = json['user']

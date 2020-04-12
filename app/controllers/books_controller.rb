@@ -1,14 +1,16 @@
 class BooksController < ApplicationController
   before_action :authorization
-  around_action :catch_errors
   before_action :find_book, except: [:index, :create]
+  before_action only: [:index, :create] do 
+    current_user(:user_id)
+  end
 
   def index
-    @books = params[:filter].blank? ? Book.where(user_id: params[:user_id]) : Book.books(filter_params)
+    @books = params[:filter].blank? ? @current_user.books : @current_user.books.books(filter_params)
   end
 
   def create
-    @book = Book.new(book_params.merge(user_id: params[:user_id]))
+    @book = @current_user.books.new(book_params)
     @book.save!
   end
 
@@ -32,13 +34,5 @@ class BooksController < ApplicationController
 
   def filter_params
     params.require(:filter).permit(:field, :value)
-  end
-
-  def catch_errors
-    yield
-  rescue ActiveRecord::RecordNotFound => err
-    render json: { ok: false, status: 404, err: err }
-  rescue ActiveRecord::RecordInvalid => err
-    render json: { ok: false, status: 400, err: err }
   end
 end
