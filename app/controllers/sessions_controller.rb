@@ -1,9 +1,7 @@
 class SessionsController < ApplicationController
   def create
     @user = user
-    if @user&.authenticate(user_params[:password])
-      render json: { ok: true, data: user_token(@user) }
-    else
+    unless @user&.authenticate(user_params[:password])
       render json: { ok: false, err: 'Unauthorized' }, status: 401
     end
   end
@@ -25,9 +23,5 @@ class SessionsController < ApplicationController
   
   def user_params
     params.require(:user).permit(:id, :first_name, :last_name, :email, :username, :password)
-  end
-
-  def user_token(user)
-    { token: WebToken.encode({user_id: user.id}), exp: 24.hours.from_now.to_date.to_s, username: user.username }  
   end
 end
